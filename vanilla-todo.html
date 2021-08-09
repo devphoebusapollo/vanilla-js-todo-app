@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vanilla Todo</title>
+        <style>
+            * {
+                font-family: Candara;
+            }
+            h1 {
+                color: white;
+                text-transform: uppercase;
+                text-shadow: 3px 3px rgb(157, 58, 250);
+                font-size: 2em;
+            }
+            section {
+                width: 400px;
+                height: 600px;
+                margin: 0 auto;
+                padding: 0;
+                text-align: center;
+                border: solid black 1px;
+                background-color: rgb(42, 0, 82);
+            }
+            .input-text {
+                width: 280px;
+                height: 32px;
+                border: none;
+                outline: none;
+                background-color: white;
+            }
+            .paragraph {
+                text-align: justify;
+                width: 100%;
+                height: auto;
+                margin: .5em auto;
+                padding: .3em;
+                box-sizing: border-box;
+                background-color: rgb(161, 60, 255);
+                color: white;
+                font-weight: 700;
+                overflow: hidden;
+            }
+            .lists {
+                margin: 2em auto;
+                width: 330px;
+            }
+            #add-button {
+                width: 50px;
+                height: 34px;
+                font-weight: bold;
+                cursor: pointer;
+                border: none;
+                font-size: 1em;
+                background-color: rgb(157, 58, 250);
+                color: white;
+                text-shadow: 2px 2px rgb(42, 0, 82);
+                outline: none;
+            }
+            .clear-button {
+                width: 90px;
+                height: 33px;
+                font-weight: bold;
+                cursor: pointer;
+                border: none;
+                font-size: 1em;
+                background-color: rgb(157, 58, 250);
+                color: white;
+                text-shadow: 2px 2px rgb(42, 0, 82);
+            }
+            .instructions {
+                font-size: .7em;
+                text-align: center;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <section>
+            <h1>What to do today?</h1>
+            <input class="input-text" type="text" placeholder="Add item..." maxlength="40"><input id="add-button" type="button" value="+">
+            <div class="lists">
+            </div>
+            <button class="clear-button">Clear All</button>
+            <p class="instructions">Click an item to cross-out and double-click to remove.</p>
+        </section>
+        <script>
+            let addToList = document.getElementById('add-button');
+            let lists = document.querySelector('.lists');
+            let inputVal = document.querySelector('.input-text');
+            let clearButton = document.querySelector('.clear-button');
+            let todos = [];
+
+            addToList.onclick = () => {
+                if(inputVal.value == '') {
+                    alert('Can\'t add nothing!');
+                } else {
+                let list = document.createElement('p');
+                list.classList.add('paragraph');
+                list.setAttribute('key', todos.length);
+                list.textContent = inputVal.value.trim();
+                lists.appendChild(list);
+                list.style.cursor = 'pointer';
+                let nam = list.getAttribute('key');
+                todos.push(list.textContent);
+                localStorage.setItem('todos', JSON.stringify(todos));
+                inputVal.value = '';
+                list.addEventListener('click', () => {
+                    list.style.textDecoration = 'line-through';
+                    list.style.color = 'rgb(42, 0, 82)';
+                    list.style.cursor = 'pointer';
+                });
+                list.addEventListener('dblclick', () => {
+                    lists.removeChild(list);
+                    let num = list.getAttribute('key');
+                    todos.splice(num, 1);
+                    localStorage.removeItem('todos');
+                    localStorage.setItem('todos', JSON.stringify(todos));
+                });
+            }
+            }
+            clearButton.addEventListener('click', () => {
+                lists.textContent = '';
+                localStorage.clear('todos');
+            })
+
+            window.onload = () => {
+                let storedItems = JSON.parse(localStorage.getItem('todos'));
+                for(let i = 0; i < storedItems.length; i++) {
+                 let list = document.createElement('p');
+                list.classList.add('paragraph');
+                list.setAttribute('key', todos.length);
+                list.textContent = storedItems[i];
+                lists.appendChild(list);
+                list.style.cursor = 'pointer';
+                let nam = list.getAttribute('key');
+                todos.push(list.textContent);
+                localStorage.setItem('todos', JSON.stringify(todos));
+                list.addEventListener('click', () => {
+                    list.style.textDecoration = 'line-through';
+                    list.style.color = 'rgb(42, 0, 82)';
+                    list.style.cursor = 'pointer';
+                });
+                list.addEventListener('dblclick', () => {
+                    lists.removeChild(list);
+                    let num = list.getAttribute('key');
+                    todos.splice(num, 1);
+                    localStorage.removeItem('todos');
+                    localStorage.setItem('todos', JSON.stringify(todos));
+                });
+                }
+            }
+        </script>
+    </body>
+</html>
